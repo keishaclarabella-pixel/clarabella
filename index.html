@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Room: Math Edition</title>
+    <style>
+        /* ========================================== */
+        /* STYLE TEMA KERTAS STRIMIN MATEMATIKA REALISTIS */
+        /* ========================================== */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #fcfbfa;
+            background-image: 
+                linear-gradient(rgba(203, 155, 85, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(203, 155, 85, 0.15) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #3d3026;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navigasi Atas (Navbar) */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #3d3026; 
+            padding: 15px 20px;
+            border-bottom: 4px solid #cb9b55; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Tombol Navigasi Menu */
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #f7f1eb;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: #cb9b55;
+            border-bottom: 3px solid #cb9b55;
+        }
+
+        /* Area Konten */
+        .content-area {
+            flex: 1;
+            padding: 25px 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 850px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* TAMPILAN TAB KONTEN JAVASCRIPT AMAN */
+        .tab-content {
+            display: none; 
+            width: 100%;
+        }
+
+        .tab-content.active {
+            display: block !important;
+        }
+
+        /* Catatan Kertas Detektif */
+        .home-paper {
+            background: #ffffff; 
+            padding: 30px;
+            border-radius: 4px;
+            border-left: 6px double #cb9b55;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        /* Foto Papan Tulis Mtk */
+        .math-chalkboard-frame {
+            width: 100%;
+            height: 300px;
+            border: 10px solid #3d3026;
+            border-radius: 4px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background-image: url('https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=1000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* KOTAK PRESENTASI ELEGAN (PENGGANTI IFRAME BIAR GAK BLANK) */
+        .canva-box {
+            background: #ffffff;
+            padding: 40px 20px;
+            border: 4px solid #3d3026;
+            border-radius: 12px;
+            margin-top: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .btn-canva-launch {
+            display: inline-block;
+            background-color: #cb9b55;
+            color: #3d3026;
+            padding: 15px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 5px 0 #9e753b;
+            transition: 0.2s ease;
+            margin-top: 20px;
+        }
+
+        .btn-canva-launch:hover {
+            background-color: #e3ae64;
+            transform: translateY(-2px);
+        }
+
+        .btn-canva-launch:active {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
+
+        /* ========================================== */
+        /* INTERAKSI GAME MATEMATIKA (PRODUCT)        */
+        /* ========================================== */
+        .game-box {
+            background-color: #3d3026;
+            color: #f7f1eb;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin: 20px auto;
+            border: 3px dashed #cb9b55;
+            max-width: 500px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(247, 241, 235, 0.3);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .timer-badge {
+            background-color: #a04026;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .progress-badge {
+            background-color: #cb9b55;
+            color: #3d3026;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .game-input {
+            padding: 12px;
+            width: 70%;
+            max-width: 250px;
+            background-color: #f7f1eb;
+            color: #3d3026;
+            border: 2px solid #cb9b55;
+            font-size: 18px;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        .btn-crack {
+            background-color: #cb9b55;
+            color: #3d3026;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 4px 0 #9e753b;
+        }
+
+        .btn-crack:hover { background-color: #e3ae64; transform: translateY(-2px); }
+        .btn-crack:active { transform: translateY(2px); box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="nav-links">
+            <button class="nav-btn active" onclick="gantiTab('home', this)">🏠 Home</button>
+            <button class="nav-btn" onclick="gantiTab('about', this)">👥 About Us</button>
+            <button class="nav-btn" onclick="gantiTab('design', this)">🎨 Design</button>
+            <button class="nav-btn" onclick="gantiTab('product', this)">🎮 Product</button>
+        </div>
+    </div>
+
+    <div class="content-area">
+        <div class="container">
+
+            <div id="home" class="tab-content active">
+                <div class="home-paper">
+                    <h1 style="font-size: 22px; letter-spacing: 2px; margin-bottom: 5px; color: #a04026; font-weight: bold;">CRIME SCENE INVESTIGATION</h1>
+                    <h2 style="font-size: 30px; letter-spacing: 1px; margin-top: 0; color: #3d3026;">MATH DETECTIVE</h2>
+                    <p style="color: #4a3b32; font-size: 15px; line-height: 1.7; font-weight: bold; margin-top: 15px;">
+                        Sebuah brankas rahasia terkunci rapat di dalam laboratorium kriminal! Di game seru ini, kamu akan menjadi detektif hebat yang bertugas memecahkan kode-kode matematika untuk membuka jalan keluar (Escape Room).
+                    </p>
+                    <p style="color: #4a3b32; font-size: 15px; line-height: 1.7; font-weight: bold;">
+                        Gunakan ketelitianmu dan kumpulkan semua petunjuk tersembunyi, karena setiap hitungan adalah kunci keselamatanmu!
+                    </p>
+                </div>
+                <div class="math-chalkboard-frame"></div>
+            </div>
+
+            <div id="about" class="tab-content">
+                <h2 style="color: #3d3026;">👥 ABOUT OUR CREW</h2>
+                <p style="color: #4a3b32; font-weight: bold;">Yuk, kenalan dengan tim investigator hebat di balik game matematika ini:</p>
+                <div class="canva-box">
+                    <p style="font-size: 16px; font-weight: bold; color: #3d3026;">📄 Dokumen Presentasi Anggota Kelompok</p>
+                    <p style="color: #7a685a; font-size: 14px;">Klik tombol di bawah untuk menampilkan slide portofolio tim secara interaktif.</p>
+                    <a href="https://canva.link/lhq30pqpmloacil" target="_blank" class="btn-canva-launch">🎯 TAMPILKAN SLIDE TIM</a>
+                </div>
+            </div>
+
+            <div id="design" class="tab-content">
+                <h2 style="color: #3d3026;">🎨 DESIGN BLUEPRINT</h2>
+                <p style="color: #4a3b32; font-weight: bold;">Rancangan visual, papan cerita, dan peta panggung detektif kami:</p>
+                <div class="canva-box">
+                    <p style="font-size: 16px; font-weight: bold; color: #3d3026;">📐 Dokumen Blueprint & Storyboard Desain</p>
+                    <p style="color: #7a685a; font-size: 14px;">Klik tombol di bawah untuk menampilkan seluruh cetak biru konsep map.</p>
+                    <a href="https://canva.link/6547sl1abj0ie19" target="_blank" class="btn-canva-launch">🎨 TAMPILKAN BLUEPRINT</a>
+                </div>
+            </div>
+
+            <div id="product" class="tab-content">
+                <h2 style="color: #3d3026;">🎮 PRODUCT: LIVE ESCAPE ROOM</h2>
+                <p style="color: #4a3b32; font-weight: bold;">Pecahkan rantai soal matematika berikut sebelum waktu kamu habis!</p>
+                
+                <div class="game-box">
+                    <div class="game-header">
+                        <div id="levelBadge" class="progress-badge">Level 1/3</div>
+                        <div id="timerDisplay" class="timer-badge">⏳ 05:00</div>
+                    </div>
+                    
+                    <p id="petunjukSoal" style="line-height: 1.7; font-size: 18px;">
+                        🔍 <strong>Misi 1 (Operasi Campuran):</strong><br>
+                        Hitung nilai dari teka-teki enkripsi berikut:<br><br>
+                        <strong style="font-size: 28px; color: #cb9b55; letter-spacing: 2px;">4 × (5 - 2) + 6</strong>
+                    </p>
+                    
+                    <input type="number" id="jawabanUser" class="game-input" placeholder="Isi angka...">
+                    <br>
+                    <button class="btn-crack" id="btnGame" onclick="prosesGame()">BYPASS SISTEM 🔓</button>
+                </div>
+                <p id="pesanGame" style="font-size: 16px; font-weight: bold; margin-top: 20px;"></p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function gantiTab(idTab, elemenTombol) {
+            let i;
+            let konten = document.getElementsByClassName("tab-content");
+            let tombol = document.getElementsByClassName("nav-btn");
+            
+            for (i = 0; i < konten.length; i++) {
+                konten[i].classList.remove("active");
+            }
+            for (i = 0; i < tombol.length; i++) {
+                tombol[i].classList.remove("active");
+            }
+            
+            document.getElementById(idTab).classList.add("active");
+            elemenTombol.classList.add("active");
+        }
+
+        // --- GAME SYSTEM ---
+        let levelSekarang = 1;
+        let waktuSisa = 300; 
+        let timerHancur = false;
+
+        let hitungMundur = setInterval(function() {
+            if (timerHancur) { clearInterval(hitungMundur); return; }
+            
+            let menit = Math.floor(waktuSisa / 60);
+            let detik = waktuSisa % 60;
+            detik = detik < 10 ? '0' + detik : detik;
+            menit = menit < 10 ? '0' + menit : menit;
+            
+            let display = document.getElementById("timerDisplay");
+            if(display) { display.innerHTML = "⏳ " + menit + ":" + detik; }
+            
+            if (waktuSisa <= 0) {
+                clearInterval(hitungMundur);
+                document.getElementById("petunjukSoal").innerHTML = "💥 <strong>WAKTU HABIS!</strong> Laboratorium terkunci.";
+                document.getElementById("jawabanUser").style.display = "none";
+                document.getElementById("btnGame").style.display = "none";
+                document.getElementById("pesanGame").innerHTML = "Game Over! Silakan refresh halaman untuk mencoba lagi.";
+                document.getElementById("pesanGame").style.color = "#a04026";
+            }
+            waktuSisa--;
+        }, 1000);
+
+        function prosesGame() {
+            let inputUser = document.getElementById("jawabanUser");
+            let jawaban = inputUser.value;
+            let pesan = document.getElementById("pesanGame");
+            let petunjuk = document.getElementById("petunjukSoal");
+            let badge = document.getElementById("levelBadge");
+            let tombol = document.getElementById("btnGame");
+
+            if (levelSekarang == 1) {
+                if (jawaban == 18) {
+                    pesan.innerHTML = "🔓 LEVEL 1 BERHASIL! Menuju gerbang keamanan kedua...";
+                    pesan.style.color = "#cb9b55";
+                    levelSekarang = 2;
+                    setTimeout(function() {
+                        badge.innerHTML = "Level 2/3";
+                        petunjuk.innerHTML = "🔍 <strong>Misi 2 (Aljabar Dasar):</strong><br>Temukan nilai variabel x dari persamaan berikut:<br><br><strong style='font-size: 28px; color: #cb9b55; letter-spacing: 2px;'>3x - 7 = 14</strong>";
+                        inputUser.value = ""; pesan.innerHTML = "";
+                    }, 1500);
+                } else {
+                    pesan.innerHTML = "❌ SALAH! Dahulukan perkalian atau hitung isi kurung.";
+                    pesan.style.color = "#a04026";
+                }
+            } 
+            else if (levelSekarang == 2) {
+                if (jawaban == 7) {
+                    pesan.innerHTML = "🔓 LEVEL 2 BERHASIL! Sensor laser terakhir menghadang.";
+                    pesan.style.color = "#cb9b55";
+                    levelSekarang = 3;
+                    setTimeout(function() {
+                        badge.innerHTML = "Level 3/3";
+                        petunjuk.innerHTML = "🔍 <strong>Misi 3 (Deret Angka):</strong><br>Lengkapi deret geometri digital berikut ini:<br><br><strong style='font-size: 26px; color: #cb9b55; letter-spacing: 2px;'>2, 4, 8, 16, ...</strong>";
+                        inputUser.value = ""; pesan.innerHTML = "";
+                        tombol.innerHTML = "MATIKAN LASER 🛑";
+                    }, 1500);
+                } else {
+                    pesan.innerHTML = "❌ GAGAL! Pindahkan angka 7 ke ruas kanan dulu.";
+                    pesan.style.color = "#a04026";
+                }
+            } 
+            else if (levelSekarang == 3) {
+                if (jawaban == 32) {
+                    timerHancur = true;
+                    badge.innerHTML = "🏆 SELESAI";
+                    badge.style.backgroundColor = "#4CAF50";
+                    badge.style.color = "white";
+                    petunjuk.innerHTML = "🎯 <strong>MISI SELESAI!</strong><br>Kamu berhasil meloloskan diri dengan kemampuan matematika jeniusmu! Proyek siap dikumpulkan. 🎉🕵️‍♀️";
+                    inputUser.style.display = "none";
+                    tombol.style.display = "none";
+                    pesan.innerHTML = "SUCCESS: Semua kode terverifikasi aman.";
+                    pesan.style.color = "#4CAF50";
+                } else {
+                    pesan.innerHTML = "❌ SALAH! Polanya dikali dua terus, coba hitung suku kelima.";
+                    pesan.style.color = "#a04026";
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
